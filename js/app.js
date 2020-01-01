@@ -1,6 +1,7 @@
 //Vars
 const budget = prompt("Set your budget");
 let userBudget = 0;
+const form = document.querySelector("form#agregar-gasto");
 
 //Classes
 class Budget {
@@ -17,13 +18,22 @@ class Budget {
 class Interface {
   showBudget(message, blockClass) {
     //const budgetBlock = document.getElementById("total");
-    const budgetBlock = document.querySelector("span#total");
-    budgetBlock.innerHTML = message;
+    const span = document.querySelector("span#total");
+    span.innerHTML = `${message}`;
   }
   showRemaning(message, blockClass) {
     //const budgetBlock = document.getElementById("restante");
-    const budgetBlock = document.querySelector("span#restante");
-    budgetBlock.innerHTML = message;
+    const span = document.querySelector("span#restante");
+    span.innerHTML = `${message}`;
+  }
+
+  showFormMessage(message, blockClass) {
+    const div = document.createElement("div");
+    div.classList.add("text-center", "alert");
+    div.classList.add(blockClass);
+    div.appendChild(document.createTextNode(message));
+    console.log(div);
+    document.querySelector(".primario").insertBefore(div, form);
   }
 }
 
@@ -36,5 +46,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const ui = new Interface();
     ui.showBudget(userBudget.budget, "");
     ui.showRemaning(userBudget.remaining, "");
+  }
+});
+
+form.addEventListener("submit", function(e) {
+  console.log("Yo!");
+  e.preventDefault();
+  const form = document.getElementById("agregar-gasto");
+  const spendName = document.getElementById("gasto").value;
+  const spendAmount = document.getElementById("cantidad").value;
+  const ui = new Interface();
+
+  if ("" === spendName || "" === spendAmount) {
+    ui.showFormMessage("Check fields", "alert-danger");
+    setTimeout(() => {
+      form.reset();
+      document.querySelector(".alert").remove();
+    }, 1500);
+  } else {
+    console.log(spendName);
+    console.log(spendAmount);
   }
 });
