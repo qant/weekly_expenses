@@ -32,8 +32,16 @@ class Interface {
     div.classList.add("text-center", "alert");
     div.classList.add(blockClass);
     div.appendChild(document.createTextNode(message));
-    console.log(div);
     document.querySelector(".primario").insertBefore(div, form);
+  }
+  showListMessage(spendName, spendAmount) {
+    const spends = document.querySelector("#gastos ul.list-group");
+    const li = document.createElement("li");
+    const message = `${spendName} <span class="badge badge-primary badge-pill">$ ${spendAmount}</span>`;
+    li.className =
+      "list-group-item d-flex justify-content-between align-items-center";
+    li.innerHTML = message;
+    spends.appendChild(li);
   }
 }
 
@@ -61,10 +69,11 @@ form.addEventListener("submit", function(e) {
     ui.showFormMessage("Check fields", "alert-danger");
     setTimeout(() => {
       form.reset();
-      document.querySelector(".alert").remove();
+      document.querySelector(".primario .alert").remove();
     }, 1500);
   } else {
     console.log(spendName);
     console.log(spendAmount);
+    ui.showListMessage(spendName, spendAmount);
   }
 });
