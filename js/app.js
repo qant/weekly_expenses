@@ -16,15 +16,22 @@ class Budget {
 }
 
 class Interface {
-  showBudget(message, blockClass) {
+  showBudget(message) {
     //const budgetBlock = document.getElementById("total");
     const span = document.querySelector("span#total");
     span.innerHTML = `${message}`;
   }
-  showRemaning(message, blockClass) {
+  showRemaning(message, blockClass = "") {
     //const budgetBlock = document.getElementById("restante");
     const span = document.querySelector("span#restante");
     span.innerHTML = `${message}`;
+    if (blockClass !== "") {
+      const remaining = document.querySelector("div.restante");
+      remaining.classList.remove("alert-success");
+      remaining.classList.remove("alert-warning");
+      remaining.classList.remove("alert-danger");
+      remaining.classList.add(blockClass);
+    }
   }
 
   showFormMessage(message, blockClass) {
@@ -43,6 +50,23 @@ class Interface {
     li.innerHTML = message;
     spends.appendChild(li);
   }
+
+  updateRemaining(spendAmount) {
+    userBudget.remainingCalculate(spendAmount);
+    const ui = new Interface();
+    const className = this.checkRemaining();
+    ui.showRemaning(userBudget.remaining, className);
+  }
+
+  checkRemaining() {
+    let classRemaining = "";
+    if (userBudget.remaining < (userBudget.budget / 100) * 10) {
+      classRemaining = "alert-danger"; //less 10%
+    } else if (userBudget.remaining < (userBudget.budget / 100) * 50) {
+      classRemaining = "alert-warning"; //less 50%
+    }
+    return classRemaining;
+  }
 }
 
 //events
@@ -58,7 +82,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 form.addEventListener("submit", function(e) {
-  console.log("Yo!");
   e.preventDefault();
   const form = document.getElementById("agregar-gasto");
   const spendName = document.getElementById("gasto").value;
@@ -72,8 +95,7 @@ form.addEventListener("submit", function(e) {
       document.querySelector(".primario .alert").remove();
     }, 1500);
   } else {
-    console.log(spendName);
-    console.log(spendAmount);
     ui.showListMessage(spendName, spendAmount);
+    ui.updateRemaining(spendAmount);
   }
 });
